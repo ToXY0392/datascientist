@@ -42,17 +42,17 @@ end
 
 def print_all_answers(handles)
   puts "=== Big Data (vraiment) ==="
-  puts "On va faire parler des @. Pas les vrais, ceux des strings."
+  puts "Bob Razowski commence son rapport..."
 
   puts
   puts "1) Nombre total de handles : #{count_handles(handles)}"
 
   sh = shortest_handle(handles)
-  puts "2) Handle le plus court : #{sh} (#{core(sh).length} caractères, sans compter @)"
+  puts "2) Handle le plus court : #{sh} (#{core(sh).length} caractères)"
 
-  puts "3) Handles de 5 caractères (sans @) : #{count_length_5(handles)}"
+  puts "3) Handles de 5 caractères : #{count_length_5(handles)}"
 
-  puts "4) Handles commençant par une majuscule (juste après @) : #{count_starts_with_uppercase(handles)}"
+  puts "4) Handles commençant par une majuscule : #{count_starts_with_uppercase(handles)}"
 
   puts
   puts "5) Liste triée par ordre alphabétique (affichage complet) :"
@@ -71,13 +71,13 @@ def print_all_answers(handles)
   end
 
   puts
-  puts "8) Répartition par taille (sans @) :"
+  puts "8) Répartition par taille :"
   distribution_by_size(handles).each do |len, n|
     puts "   - #{len} caractère(s) : #{n}"
   end
 
   puts
-  puts "Fin du rapport. Aucun journaliste n'a été maltraité durant cette exécution. Les strings, par contre…"
+  puts "Bob Razowski a enfin remis son rapport..."
 end
 
 def menu(handles)
