@@ -6,110 +6,78 @@ HANDLES = ["@jcunniet","@PaulLampon","@Aziliz31","@ssoumier","@marionsouzeau","@
 def core(h) = h[1..] || "" # sans '@'
 
 def count_handles(handles)
-  handles.length
+    handles.length
 end
 
 def shortest_handle(handles)
-  handles.min_by { |h| core(h).length }
+    handles.min_by { |h| core(h).length }
 end
 
 def count_length_5(handles)
-  handles.count { |h| core(h).length == 5 }
+    handles.count { |h| core(h).length == 5 }
 end
 
 def count_starts_with_uppercase(handles)
-  handles.count { |h| (core(h)[0] || "") =~ /[A-Z]/ }
+    handles.count { |h| (core(h)[0] || "") =~ /[A-Z]/ }
 end
 
+# Tri alphabétique en ignorant les préfixes non alphanumériques (ex: '_' en début)
 def sorted_alpha(handles)
-  handles.sort_by { |h| core(h).downcase }
+    handles.sort_by do |h|
+    s = core(h).downcase
+    [s.sub(/\A[^a-z0-9]+/, ""), s]
+    end
 end
 
 def sorted_by_size(handles)
-  handles.sort_by { |h| [core(h).length, core(h).downcase] }
+    handles.sort_by { |h| [core(h).length, core(h).downcase] }
 end
 
 def position_of(handles, target)
-  idx = handles.index(target)
-  { zero_based: idx, one_based: idx ? idx + 1 : nil }
+    idx = handles.index(target)
+    { zero_based: idx, one_based: idx ? idx + 1 : nil }
 end
 
 def distribution_by_size(handles)
-  dist = Hash.new(0)
-  handles.each { |h| dist[core(h).length] += 1 }
-  dist.sort_by { |len, _| len }.to_h
+    dist = Hash.new(0)
+    handles.each { |h| dist[core(h).length] += 1 }
+    dist.sort_by { |len, _| len }.to_h
 end
 
 def print_all_answers(handles)
-  puts "=== Big Data (vraiment) ==="
-  puts "Bob Razowski commence son rapport..."
+    puts "Bob Razowski au rapport !"
+    puts
 
-  puts
-  puts "1) Nombre total de handles : #{count_handles(handles)}"
+    puts "1) Nombre total de handles : #{count_handles(handles)}"
 
-  sh = shortest_handle(handles)
-  puts "2) Handle le plus court : #{sh} (#{core(sh).length} caractères)"
+    sh = shortest_handle(handles)
+    puts "2) Handle le plus court : #{sh} (#{core(sh).length} caractères)"
 
-  puts "3) Handles de 5 caractères : #{count_length_5(handles)}"
+    puts "3) Handles de 5 caractères : #{count_length_5(handles)}"
+    puts "4) Handles commençant par une majuscule : #{count_starts_with_uppercase(handles)}"
 
-  puts "4) Handles commençant par une majuscule : #{count_starts_with_uppercase(handles)}"
+    puts
+    puts "5) Liste triée par ordre alphabétique : #{handles.length} handles"
 
-  puts
-  puts "5) Liste triée par ordre alphabétique (affichage complet) :"
-  puts sorted_alpha(handles).join(", ")
+    puts
+    puts "6) Liste triée par taille (petits -> grands), puis alphabétique : #{handles.length} handles"
 
-  puts
-  puts "6) Liste triée par taille (petits -> grands), puis alphabétique (affichage complet) :"
-  puts sorted_by_size(handles).join(", ")
-
-  pos = position_of(handles, "@epenser")
-  puts
-  if pos[:zero_based]
+    pos = position_of(handles, "@epenser")
+    puts
+    if pos[:zero_based]
     puts "7) Position de @epenser : index Ruby (0-based) = #{pos[:zero_based]} ; position humaine (1-based) = #{pos[:one_based]}"
-  else
+    else
     puts "7) @epenser est introuvable dans l'array."
-  end
-
-  puts
-  puts "8) Répartition par taille :"
-  distribution_by_size(handles).each do |len, n|
-    puts "   - #{len} caractère(s) : #{n}"
-  end
-
-  puts
-  puts "Bob Razowski a enfin remis son rapport..."
 end
 
-def menu(handles)
-  actions = {
-    "1" => ["Compter les handles", -> { puts count_handles(handles) }],
-    "2" => ["Handle le plus court", -> { h = shortest_handle(handles); puts "#{h} (#{core(h).length})" }],
-    "3" => ["Compter ceux de 5 caractères (sans @)", -> { puts count_length_5(handles) }],
-    "4" => ["Compter ceux qui commencent par une majuscule", -> { puts count_starts_with_uppercase(handles) }],
-    "5" => ["Trier alphabétiquement (afficher)", -> { puts sorted_alpha(handles).join(", ") }],
-    "6" => ["Trier par taille (afficher)", -> { puts sorted_by_size(handles).join(", ") }],
-    "7" => ["Position de @epenser", -> { p = position_of(handles, "@epenser"); puts(p[:zero_based] ? "0-based=#{p[:zero_based]} ; 1-based=#{p[:one_based]}" : "introuvable") }],
-    "8" => ["Répartition par taille", -> { distribution_by_size(handles).each { |len, n| puts "#{len}: #{n}" } }],
-    "9" => ["Tout afficher d'un coup", -> { print_all_answers(handles) }]
-  }
-
-  loop do
     puts
-    puts "=== Menu ==="
-    actions.each { |k, (label, _)| puts "#{k}. #{label}" }
-    puts "0. Quitter"
-    print "> "
-    choice = STDIN.gets&.strip
-    break if choice.nil? || choice == "0"
+    puts "8) Répartition par taille :"
+    distribution_by_size(handles).each do |len, n|
+    puts "   - #{len} caractère(s) : #{n}"
+end
 
-    if actions.key?(choice)
-      puts
-      actions[choice][1].call
-    else
-      puts "Choix invalide."
-    end
-  end
+    puts
+    puts "Bob Razowski a enfin remis son rapport..."
 end
 
 print_all_answers(HANDLES)
-# menu(HANDLES)
